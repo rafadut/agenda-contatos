@@ -9,7 +9,7 @@ namespace agenda_de_contatos.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
             ContextKey = "agenda_de_contatos.Models.AgendaContext";
         }
 
