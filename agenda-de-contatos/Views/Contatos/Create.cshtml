@@ -1,0 +1,111 @@
+﻿@model agenda_de_contatos.Models.Contato
+
+@{
+    ViewBag.Title = "Criar";
+}
+
+<h2>Criar</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Contato</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Nome, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Nome, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Nome, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Telefones</label>
+            <div class="col-md-3">
+                <input type="tel" id="txtTelefone" class="form-control" placeholder="(11) 91234-5678 / (11) 1234-5678" />
+                @Html.HiddenFor(model => model.Telefone, new { @id = "hdnTelefone" })
+                <input type="button" value="Adicionar" class="btn btn-default btn-add" onclick="adicionarTelefone()" />
+            </div>
+            <ul id="listaTelefones" class="col-md-3"></ul>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3">
+                <input type="email" id="txtEmail" class="form-control" />
+                @Html.HiddenFor(model => model.Email, new { @id = "hdnEmail" })
+                <input type="button" value="Adicionar" class="btn btn-default btn-add" onclick="adicionarEmail()" />
+            </div>
+            <ul id="listaEmails" class="col-md-3"></ul>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Criar" class="btn btn-default" onclick="formatarTelefoneEmail()" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Voltar", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script>
+    
+    function adicionarTelefone() {
+        let telefone = $('#txtTelefone').val();
+        let reg = /\([1-9]\d\)\s9?\d{4}-\d{4}/;
+        if (reg.test(telefone)) {
+            $('#listaTelefones').append('<li>' + $('#txtTelefone').val() + '</li>');
+            $('#txtTelefone').val('');
+        }
+        else {
+            alert('o formato do telefone está incorreto');
+        }
+    }
+
+    function adicionarEmail() {
+        let email = $('#txtEmail').val();
+        let reg = /[a-z0-9.]+@@[a-z0-9]+\.[a-z]+(\.[a-z]+)?$/;
+        if (reg.test(email)) {
+            $('#listaEmails').append('<li>' + $('#txtEmail').val() + '</li>');
+            $('#txtEmail').val('');
+        }
+        else {
+            alert('email inválido');
+        }
+    }
+
+    function formatarTelefoneEmail() {
+        let stringTelefone = ''
+        let telefones = $('#listaTelefones li');
+        let qtdTelefones = telefones.length;
+        for (var i = 0; i < qtdTelefones; i++) {
+            if (i != 0) {
+                stringTelefone = stringTelefone + ';';
+            }
+            stringTelefone = stringTelefone + telefones[i].innerText;
+        }
+        $('#hdnTelefone').val(stringTelefone);
+        console.log($('#hdnTelefone').val());
+
+        let stringEmail = ''
+        let emails = $('#listaEmails li');
+        let qtdEmails = emails.length;
+        for (var i = 0; i < qtdEmails; i++) {
+            if (i != 0) {
+                stringEmail = stringEmail + ';';
+            }
+            stringEmail = stringEmail + emails[i].innerText;
+        }
+        $('#hdnEmail').val(stringEmail);
+        console.log($('#hdnEmail').val());
+    }
+</script>
